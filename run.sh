@@ -6,4 +6,5 @@
 
 # When all of the problems with the NFS being mounted are gone
 # this needs to be updated to use the hosts file
-mpirun --host group1,compute-0-0 ./main.py
+# mpirun --host group1,compute-0-0 ./main.py
+mpirun -hostfile hosts ./main.py
