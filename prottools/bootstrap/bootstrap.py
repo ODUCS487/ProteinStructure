@@ -37,7 +37,7 @@ def bootstrap():
 	# if this is a head-node, import and execute
 	# the head-node bootstrap, else same for
 	# child-node bootstrap
-	if globals.rank == 0 and globals.name in globals.KNOWN_HEAD_NODE:
+	if globals.rank == 0 and globals.name in globals.static.KNOWN_HEAD_NODE:
 		from prottools.bootstrap import head
 	else:
 		from prottools.bootstrap import child

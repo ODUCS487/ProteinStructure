@@ -24,8 +24,10 @@
 #
 # These values are static and should not be changed
 # during runtime and as defined in all uppercase letters
-KNOWN_HEAD_NODE = [
-	"group1",
-	"group1.local",
-	"group1.cs.odu.edu"
-]
+class static:
+	## @var KNOWN_HEAD_NODE
+	KNOWN_HEAD_NODE = [
+		"group1",
+		"group1.local",
+		"group1.cs.odu.edu"
+	]
