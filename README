@@ -1,1 +1,13 @@
-What a terrible file.
+## README
+#
+# CS488 SPRING 2011
+# OLD DOMINION UNIVERSITY
+# W. COLE DAVIS
+# Protein Structure Project
+
+##
+# @TODO: This file needs a full description of the project
+
+Use the sample bash script "run.sh" as a shortcut to execute main using
+mpirun. It will be updated as time goes and will continue to be a useful
+tool.
