@@ -32,14 +32,22 @@ globals.name = MPI.Get_processor_name()
 # correct bootstrap for each node type
 #
 # No parameters, returns no values.
-# Should not be called on its own
+# Should not be called on its own outside of this
+# bootstrapper.
 def bootstrap():
+	# the following allows the assignment of a variable or function
+	# outside the scope of the current function
+	global start
 	# if this is a head-node, import and execute
 	# the head-node bootstrap, else same for
-	# child-node bootstrap
+	# child-node bootstrap and assign the bootstrap.start
+	# reference to the correct function
 	if globals.rank == 0 and globals.name in globals.static.KNOWN_HEAD_NODE:
 		from prottools.bootstrap import head
+		start = head.start
 	else:
 		from prottools.bootstrap import child
+		start = child.start
 
+## Execute the bootstrap startup
 bootstrap()

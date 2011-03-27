@@ -6,3 +6,6 @@ from prottools.globals import globals
 
 ## Set globals.type
 globals.type = "child"
+
+def start():
+	pass

@@ -32,4 +32,7 @@ from prottools.bootstrap import bootstrap
 
 print 'Rank: %d, Name: %s, Type: %s' % (globals.rank, globals.name, globals.type)
 
+## Execute the startup function defined by the bootstrapper
+bootstrap.start()
+
 exit
