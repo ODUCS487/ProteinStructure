@@ -1,0 +1,6 @@
+# Ignore files matching these expressions
+
+# Compiled python
+*.pyc
+# Backup edited files
+*~
