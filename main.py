@@ -18,7 +18,7 @@
 #        once it has been completed and they have been defined
 
 ## Import the project globals
-from prottools.globals import globals
+from pcat.globals import globals
 
 ## Import the project bootstrapper
 #
@@ -27,8 +27,8 @@ from prottools.globals import globals
 # immediately necessary package(s) - it also determines
 # whether or not this is a head-node or child-node and
 # acts accordingly. For more information see bootstrap.py
-# in the prottools package directory
-from prottools.bootstrap import bootstrap
+# in the pcat package directory
+from pcat.bootstrap import bootstrap
 
 # print 'Rank: %d, Name: %s, Type: %s' % (globals.rank, globals.name, globals.type)
 
