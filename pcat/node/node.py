@@ -84,3 +84,110 @@ for n in globals.nodes:
 	for v in n.nodes:
 		print "\tchild name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes and ", len(v.bonds), " bonds"
 
+
+# testing the ability to pass as a paramter and make changes to base object
+
+def somefunc(_node, _nodetoadd):
+	_node.nodes.append(_nodetoadd)
+	if _node.name == 's':
+		_node.name = 'ffggff'
+
+print ""
+print ""
+print "using globals objects as paramters to functions..."
+
+somefunc(globals.nodes[0], globals.nodes[4])
+somefunc(globals.nodes[1], globals.nodes[3])
+
+print "globals.nodes.count = ", len(globals.nodes)
+for n in globals.nodes:
+	print "this nodes name = ", n.name, " id = ", n.id, " and has ", len(n.nodes), " nodes and ", len(n.bonds), " bonds"
+	for v in n.nodes:
+		print "\tchild name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes and ", len(v.bonds), " bonds"
+
+
+print ""
+print ""
+print "same with locals..."
+
+s = node('s')
+p = node('p')
+q = node('q')
+
+s.nodes.append(p)
+q.nodes.append(s)
+p.nodes.append(s)
+p.nodes.append(q)
+
+print "node name = ", s.name, " id = ", s.id, " and has ", len(s.nodes), " nodes"
+for v in s.nodes:
+	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
+
+print "node name = ", p.name, " id = ", p.id, " and has ", len(p.nodes), " nodes"
+for v in p.nodes:
+	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
+
+print "node name = ", q.name, " id = ", q.id, " and has ", len(q.nodes), " nodes"
+for v in q.nodes:
+	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
+
+print ""
+print "using as func params"
+
+somefunc(s, p)
+somefunc(p, q)
+somefunc(q, s)
+
+
+print "node name = ", s.name, " id = ", s.id, " and has ", len(s.nodes), " nodes"
+for v in s.nodes:
+	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
+
+print "node name = ", p.name, " id = ", p.id, " and has ", len(p.nodes), " nodes"
+for v in p.nodes:
+	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
+
+print "node name = ", q.name, " id = ", q.id, " and has ", len(q.nodes), " nodes"
+for v in q.nodes:
+	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
+
+
+print ""
+print ""
+print ""
+
+print "mixing and matching local and global(s) objects"
+print ""
+
+
+somefunc(s, globals.nodes[3])
+somefunc(globals.nodes[2], p)
+somefunc(globals.nodes[3], q)
+
+globals.nodes.append(s)
+globals.nodes[0].nodes.append(q)
+
+print "printing locals first"
+print ""
+
+print "node name = ", s.name, " id = ", s.id, " and has ", len(s.nodes), " nodes"
+for v in s.nodes:
+	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
+
+print "node name = ", p.name, " id = ", p.id, " and has ", len(p.nodes), " nodes"
+for v in p.nodes:
+	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
+
+print "node name = ", q.name, " id = ", q.id, " and has ", len(q.nodes), " nodes"
+for v in q.nodes:
+	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
+
+
+print "now printing the pcat.globals nodes"
+print ""
+print "globals.nodes.count = ", len(globals.nodes)
+for n in globals.nodes:
+	print "this nodes name = ", n.name, " id = ", n.id, " and has ", len(n.nodes), " nodes and ", len(n.bonds), " bonds"
+	for v in n.nodes:
+		print "\tchild name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes and ", len(v.bonds), " bonds"
+
