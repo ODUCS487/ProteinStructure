@@ -35,4 +35,6 @@ from pcat.bootstrap import bootstrap
 ## Execute the startup function defined by the bootstrapper
 bootstrap.start()
 
+globals.manager.close()
+
 exit

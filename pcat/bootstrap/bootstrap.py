@@ -15,11 +15,17 @@ from mpi4py import MPI
 ## Import project globals
 from pcat.globals import globals
 
+## Import project com manager
+from pcat.com import com
+
 ## Determine and assign current rank
 globals.rank = MPI.COMM_WORLD.Get_rank()
 
 ## Determine and assign current name
 globals.name = MPI.Get_processor_name()
+
+## Create global manager
+globals.manager = com.mgr()
 
 ## Bootstrap function
 #
