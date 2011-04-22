@@ -28,7 +28,7 @@ if __name__ == '__main__':
         char_set = char_set[4:]
         my_nodes.append( Node( label, x, y, z ) )
         
-        print my_nodes[ i ].idlabel
+        print i, '=', my_nodes[ i ].idlabel
         print my_nodes[ i ].x
         print my_nodes[ i ].y
         print my_nodes[ i ].z
