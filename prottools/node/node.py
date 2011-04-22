@@ -10,7 +10,7 @@ class Node:
         self.x = x
         self.y = y
         self.z = z
-        self.nodes = nodes
+        self.neighbors = nodes
 
 if __name__ == '__main__':
     my_nodes = []
@@ -33,12 +33,12 @@ if __name__ == '__main__':
         print my_nodes[ i ].y
         print my_nodes[ i ].z
         
-    print my_nodes[ 1 ].nodes
+    print my_nodes[ 1 ].neighbors
     
-    my_nodes[ 1 ].nodes.append( my_nodes[ 0 ] )
-    my_nodes[ 0 ].nodes.append( my_nodes[ 1 ] )
-    my_nodes[ 1 ].nodes.append( my_nodes[ 2 ] )
-    my_nodes[ 2 ].nodes.append( my_nodes[ 1 ] )
+    my_nodes[ 1 ].neighbors.append( my_nodes[ 0 ] )
+    my_nodes[ 0 ].neighbors.append( my_nodes[ 1 ] )
+    my_nodes[ 1 ].neighbors.append( my_nodes[ 2 ] )
+    my_nodes[ 2 ].neighbors.append( my_nodes[ 1 ] )
     
-    for node in my_nodes[ 1 ].nodes:
+    for node in my_nodes[ 1 ].neighbors:
 		print node.idlabel
