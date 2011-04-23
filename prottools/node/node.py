@@ -10,6 +10,7 @@ class Node:
     self.neighbors = [] if nodes is None else nodes
 
 if __name__ == '__main__':
+  print __package__
   import string, random
 
   def connect( node_a, node_b ):
@@ -44,4 +45,3 @@ if __name__ == '__main__':
     
   for node in my_nodes[ 1 ].neighbors:
     print node.idlabel
-  
