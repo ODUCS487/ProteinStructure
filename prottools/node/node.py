@@ -1,13 +1,19 @@
 ## @package prottools
 # @TODO: needs full header
 
+from sets import Set
+
 class Node:
   def __init__( self, idlabel = "", x = 0.0, y = 0.0, z = 0.0, nodes = None ):
     self.idlabel = idlabel
     self.x = x
     self.y = y
     self.z = z
-    self.neighbors = [] if nodes is None else nodes
+    self.neighbors = Set() if nodes is None else nodes
+  
+  def connect( self, node_b ):
+    self.neighbors.add( node_b )
+    node_b.neighbors.add( self )
 
 if __name__ == '__main__':
   print __package__
