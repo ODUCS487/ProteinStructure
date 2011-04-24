@@ -1,20 +1,22 @@
 ## @package prottools
 # @TODO: needs full header
 
+from sets import Set
+
 class Node:
   def __init__( self, idlabel = '', x = 0.0, y = 0.0, z = 0.0, neighbors = None ):
     self.idlabel = idlabel
     self.x = x
     self.y = y
     self.z = z
-    self.neighbors = {} if neighbors is None else neighbors
+    # Make neighbors as set of string ids rather than actual nodes to
+    # prevent nodes from connecting to nodes not in the same chain
+    self.neighbors = Set() if neighbors is None else neighbors
   
-  # Makes two nodes become neighbors
-  def connect( self, node_b ):
-    if node_b.idlabel not in self.neighbors:
-      self.neighbors[ node_b.idlabel ] = node_b
-    if self.idlabel not in node_b.neighbors:
-      node_b.neighbors[ self.idlabel ] = self
+  # Connect function should not exist here, connecting requires having
+  # a list of all the nodes, hence connecting should be handled by
+  # the Chain class in order to prevent duplicate nodes/etc
+  # Analogy to graph theory: the Graph (Chain) should connect the dots
 
 #if __name__ == '__main__':
 if False:
