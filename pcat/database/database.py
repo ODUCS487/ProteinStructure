@@ -1,4 +1,4 @@
 ## @package pcat
 # @TODO: needs full header
 
-print "from " + __file__
+# @author W. Cole Davis

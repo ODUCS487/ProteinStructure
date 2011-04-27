@@ -1,4 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+#########!/usr/bin/python
+
+# @author W. Cole Davis
 
 #######################################################
 # CS488 - SPRING 2011 - ODU CS - J. MORRIS
@@ -30,11 +33,9 @@ from pcat.globals import globals
 # in the pcat package directory
 from pcat.bootstrap import bootstrap
 
+from pcat.exception import *
+
 # print 'Rank: %d, Name: %s, Type: %s' % (globals.rank, globals.name, globals.type)
 
 ## Execute the startup function defined by the bootstrapper
 bootstrap.start()
-
-globals.manager.close()
-
-exit

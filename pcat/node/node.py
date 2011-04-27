@@ -1,193 +1,59 @@
-#!/usr/bin/python
-## @package pcat
+## @package prottools
 # @TODO: needs full header
 
-from random import *
+# @author Alvin Fagan
 
-from pcat.globals import globals
+from sets import Set
 
-# class node
-class node:
-	def __init__(self, name):
-		self.id = getrandbits(12)
-		self.name = name
-		self.nodes = [ self ]
-		self.bonds = []
+class Node:
+  def __init__( self, idlabel = '', x = 0.0, y = 0.0, z = 0.0, neighbors = None ):
+    self.idlabel = idlabel
+    self.x = x
+    self.y = y
+    self.z = z
+    # Make neighbors as set of string ids rather than actual nodes to
+    # prevent nodes from connecting to nodes not in the same chain
+    self.neighbors = Set() if neighbors is None else neighbors
+  
+  # Connect function should not exist here, connecting requires having
+  # a list of all the nodes, hence connecting should be handled by
+  # the Chain class in order to prevent duplicate nodes/etc
+  # Analogy to graph theory: the Graph (Chain) should connect the dots
 
+#if __name__ == '__main__':
+if False:
+  print __package__
+  import string, random
 
-globals.nodes = [
-	node('d'),
-	node('e'),
-	node('f'),
-	node('g'),
-	node('h'),
-	]
+  def connect( node_a, node_b ):
+    node_a.neighbors.append( node_b )
+    node_b.neighbors.append( node_a )
 
-
-print "globals.nodes has ", len(globals.nodes), " nodes"
-for n in globals.nodes:
-	print "this nodes name = ", n.name, " id = ", n.id, " and has ", len(n.nodes), " nodes and ", len(n.bonds), " bonds"
-
-
-print "globals.nodes.count = ", len(globals.nodes)
-for n in globals.nodes:
-	print "this nodes name = ", n.name, " id = ", n.id, " and has ", len(n.nodes), " nodes and ", len(n.bonds), " bonds"
-	for v in n.nodes:
-		print "\tchild name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes and ", len(v.bonds), " bonds"
-
-
-globals.nodes[2].nodes.append(globals.nodes[1])
-globals.nodes[3].nodes.append(globals.nodes[0])
-globals.nodes[4].nodes.append(globals.nodes[2])
-globals.nodes[3].nodes.append(globals.nodes[4])
-globals.nodes[0].nodes.append(globals.nodes[2])
-
-
-print "globals.nodes.count = ", len(globals.nodes)
-for n in globals.nodes:
-	print "this nodes name = ", n.name, " id = ", n.id, " and has ", len(n.nodes), " nodes and ", len(n.bonds), " bonds"
-	for v in n.nodes:
-		print "\tchild name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes and ", len(v.bonds), " bonds"
-
-
-# trying to modify some nodes to see if it is reflected throughout
-
-print ""
-print ""
-print "modified 'd' to 'z' in one place to see if it was reflected everywhere..."
-
-# changing name from 'd' to 'z'
-globals.nodes[0].name = 'z'
-
-
-
-print "globals.nodes.count = ", len(globals.nodes)
-for n in globals.nodes:
-	print "this nodes name = ", n.name, " id = ", n.id, " and has ", len(n.nodes), " nodes and ", len(n.bonds), " bonds"
-	for v in n.nodes:
-		print "\tchild name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes and ", len(v.bonds), " bonds"
-
-
-
-# trying to add a child node to one to see if it is reflected in the count elsewhere
-
-print ""
-print ""
-print "modified 'd' by adding a child check number of child nodes where 'z' is listed as a child"
-print "original number before change = ", len(globals.nodes[0].nodes)
-
-globals.nodes[0].nodes.append(globals.nodes[3])
-
-print "globals.nodes.count = ", len(globals.nodes)
-for n in globals.nodes:
-	print "this nodes name = ", n.name, " id = ", n.id, " and has ", len(n.nodes), " nodes and ", len(n.bonds), " bonds"
-	for v in n.nodes:
-		print "\tchild name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes and ", len(v.bonds), " bonds"
-
-
-# testing the ability to pass as a paramter and make changes to base object
-
-def somefunc(_node, _nodetoadd):
-	_node.nodes.append(_nodetoadd)
-	if _node.name == 's':
-		_node.name = 'ffggff'
-
-print ""
-print ""
-print "using globals objects as paramters to functions..."
-
-somefunc(globals.nodes[0], globals.nodes[4])
-somefunc(globals.nodes[1], globals.nodes[3])
-
-print "globals.nodes.count = ", len(globals.nodes)
-for n in globals.nodes:
-	print "this nodes name = ", n.name, " id = ", n.id, " and has ", len(n.nodes), " nodes and ", len(n.bonds), " bonds"
-	for v in n.nodes:
-		print "\tchild name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes and ", len(v.bonds), " bonds"
-
-
-print ""
-print ""
-print "same with locals..."
-
-s = node('s')
-p = node('p')
-q = node('q')
-
-s.nodes.append(p)
-q.nodes.append(s)
-p.nodes.append(s)
-p.nodes.append(q)
-
-print "node name = ", s.name, " id = ", s.id, " and has ", len(s.nodes), " nodes"
-for v in s.nodes:
-	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
-
-print "node name = ", p.name, " id = ", p.id, " and has ", len(p.nodes), " nodes"
-for v in p.nodes:
-	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
-
-print "node name = ", q.name, " id = ", q.id, " and has ", len(q.nodes), " nodes"
-for v in q.nodes:
-	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
-
-print ""
-print "using as func params"
-
-somefunc(s, p)
-somefunc(p, q)
-somefunc(q, s)
-
-
-print "node name = ", s.name, " id = ", s.id, " and has ", len(s.nodes), " nodes"
-for v in s.nodes:
-	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
-
-print "node name = ", p.name, " id = ", p.id, " and has ", len(p.nodes), " nodes"
-for v in p.nodes:
-	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
-
-print "node name = ", q.name, " id = ", q.id, " and has ", len(q.nodes), " nodes"
-for v in q.nodes:
-	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
-
-
-print ""
-print ""
-print ""
-
-print "mixing and matching local and global(s) objects"
-print ""
-
-
-somefunc(s, globals.nodes[3])
-somefunc(globals.nodes[2], p)
-somefunc(globals.nodes[3], q)
-
-globals.nodes.append(s)
-globals.nodes[0].nodes.append(q)
-
-print "printing locals first"
-print ""
-
-print "node name = ", s.name, " id = ", s.id, " and has ", len(s.nodes), " nodes"
-for v in s.nodes:
-	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
-
-print "node name = ", p.name, " id = ", p.id, " and has ", len(p.nodes), " nodes"
-for v in p.nodes:
-	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
-
-print "node name = ", q.name, " id = ", q.id, " and has ", len(q.nodes), " nodes"
-for v in q.nodes:
-	print "\tnode name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes"
-
-
-print "now printing the pcat.globals nodes"
-print ""
-print "globals.nodes.count = ", len(globals.nodes)
-for n in globals.nodes:
-	print "this nodes name = ", n.name, " id = ", n.id, " and has ", len(n.nodes), " nodes and ", len(n.bonds), " bonds"
-	for v in n.nodes:
-		print "\tchild name = ", v.name, " id = ", v.id, " and has ", len(v.nodes), " nodes and ", len(v.bonds), " bonds"
-
+  my_nodes = []
+  chars = string.ascii_uppercase + string.digits
+  char_set = random.sample( chars, len( chars ) )
+  print char_set, '\n'
+  
+  limit = 100
+  limit_a = -limit
+  limit_b = limit
+  for i in range( 0, 5 ):
+    x = random.uniform( limit_a, limit_b )
+    y = random.uniform( limit_a, limit_b )
+    z = random.uniform( limit_a, limit_b )
+    label = ''.join( char_set[:4] )
+    char_set = char_set[4:]
+    my_nodes.append( Node( label, x, y, z ) )
+        
+    print i, '=', my_nodes[ i ].idlabel
+    print my_nodes[ i ].x
+    print my_nodes[ i ].y
+    print my_nodes[ i ].z, '\n'
+    
+  print my_nodes[ 1 ].neighbors
+    
+  connect( my_nodes[ 1 ], my_nodes[ 0 ] )
+  connect( my_nodes[ 1 ], my_nodes[ 2 ] )
+    
+  for node in my_nodes[ 1 ].neighbors:
+    print node.idlabel

@@ -1,14 +1,25 @@
 ## @package pcat
 # @TODO: needs full header
 
+# @author W. Cole Davis
+
 ## com
 #
 # the pcat.com module handles the creation, management, 
 # and communictions between spawned processes (not the
 # MPI created processes
 
-# import the multiprocessing
+## Import exceptions
+from pcat.exception import Error
+
+## Import the multiprocessing
 from multiprocessing import Manager, Queue, Pipe, Process
+
+## Import globals
+from pcat.globals import globals
+
+## Import types
+import types
 
 ## pcat.com.mgr
 #
@@ -40,7 +51,7 @@ class mgr(object):
 	# pcat.com.mgr.new_process creates a new process and adds it
 	# to its internal pool of workers, properly initializing it
 	# to use the available message passing interfaces
-	def new_process(self, run=None, additional=None, gui=False):
+	def new_process(self, name=None, run=None, additional=None, gui=False):
 
 		# append the queue to the argument list
 		if additional == None:
@@ -58,13 +69,19 @@ class mgr(object):
 		
 		p.start()
 
-		print "pid ", p.pid, " name ", p.name
+                # Error("Created pid %d name %s" % (p.pid, p.name))
 		
 		# add to workers pool
 		self.workers[p.pid] = p
+                if name != None:
+                  # allow indexing by pid AND by name if one was given
+                  self.workers[name] = p
 
 		# add pipe to pool
 		self.pipes[p.pid] = comm1
+                if name != None:
+                  # allow indexing by pid AND by name if one was given
+                  self.pipes[name] = comm1
 
 		# return the pid of the new process
 		return p.pid
@@ -89,169 +106,88 @@ class mgr(object):
 
 	def close(self):
 		self.queue.close()
-		print self.queue
-		print self.manager
+                # for _k in self.workers.keys():
+                #   self.workers[_k].terminate()
+                # they should have the exact same keys...no need to
+                # iterate through twice
+                for _k in self.pipes.keys():
+                  self.pipes[_k].close()
+                  self.workers[_k].terminate()
+        
+        def add(self, obj):
+          self.queue.put(obj)
 
 
-def test_func(q, comm):
-	while True:
-		msg = comm.recv()
-		comm.send("did receive: %s" % msg)
+## The dispatcher "function" is executed as a separate process
+#
+# It contains uses a static class/object to maintain functionality with
+# its own runloop waiting for instructions
+def dispatcher(queue, con):
 
-if __name__ == "__main__":
-	_mgr = mgr()
-	pid = _mgr.new_process(run=test_func)
-	print "pid returned: ", pid
-	for i in range(9):
-		_mgr.send(pid, i)
-		print _mgr.recv(pid)
-	_mgr.close()
-	_mgr.stop(pid)
-	print "done"
-	exit
+  # static _dispatcher class to handle mpi communications
+  # to nodes...
+  class _dispatcher(object):
+    @staticmethod
+    def run():
+      while True:
+        # loop until killed/is requested to close
+        # assumption is that it will receive a dict with
+        # numeric keys that represent the target
+        # it can pass any serializable (pickleable) data objects
+        while con.poll(2) == False: continue
+        instr = con.recv()
+        if instr is None: continue
+        elif isinstance(instr, dict):
+          # parse(instr) if len(instr) > 0 else continue
+          if len(instr) > 0: _dispatcher.parse(instr)
+          else: continue
+        else: continue
+    @staticmethod
+    def parse(instr):
+      for _k in instr.keys():
+        globals.comm.send(instr[_k], dest=_k, tag=_k)
+        
+  # actually run the class
+  _dispatcher.run()
 
-# import urwid
-# 
-# import sys
-# import os
-# import termios
+  # Error("In dispatcher")
+  # while True:
+  #   instr = con.recv()
+  #   if instr == "EXIT":
+  #     break
+  #   else:
+  #     for _k in instr.keys():
+  #       globals.comm.send(instr[_k], dest=_k, tag=_k)
 
+  # print "Dispatcher received exit instruction, exiting"
+  # exit
 
-# def handle_inputs(inp):
-# 	if inp in ('q', 'Q'):
-# 		conn1.send(True)
-# 		raise urwid.ExitMainLoop()
-# 	else:
-# 		conn1.send(inp)
-# 		if conn1.recv():
-# 			text.set_text(conn1.recv())
-# 
-# def some_func1(conn):
-# 
-# 	msgs = []
-# 	msg = ""
+## The publisher "function" is executed as a separate process
+#
+# It contains a static class/object to receive all messages as reported
+# by child-nodes for logging, printing...
+def publisher(queue, con):
+  pass
+  # Error("In publisher")
+  # Error("In publisher")
+  # while True:
+  #   msg = globals.comm.recv(source=0, tag=789)
+  #   Error("publisher received message %s" % (msg))
+
+# def test_func(q, comm):
 # 	while True:
-# 		ret = conn.recv()
-# 		if type(ret) is bool:
-# 			if msg != "":
-# 				msgs.append(msg)
-# 			break
-# 		elif ret == "enter":
-# 			msgs.append(msg)
-# 			conn.send(True)
-# 			conn.send(msg)
-# 			msg = ""
-# 		else:
-# 			conn.send(False)
-# 			msg += ret
-# 	print "loop done?"
-# 	print msgs[:]
-# 	conn.send(True)
-# 	conn.send(msgs)
-# 	conn.close()
+# 		msg = comm.recv()
+# 		comm.send("did receive: %s" % msg)
+# 
+# if __name__ == "__main__":
+# 	_mgr = mgr()
+# 	pid = _mgr.new_process(run=test_func)
+# 	print "pid returned: ", pid
+# 	for i in range(9):
+# 		_mgr.send(pid, i)
+# 		print _mgr.recv(pid)
+# 	_mgr.close()
+# 	_mgr.stop(pid)
+# 	print "done"
 # 	exit
-# 
-# if __name__ == "__main__":
-# 
-# 	conn1, conn2 = Pipe()
-# 
-# 	p1 = Process(target=some_func1, args=(conn2,))
-# 	p1.start()
-# 
-# 	text = urwid.Text("This is the original text")
-# 	wrap = urwid.Filler(text, "middle")
-# 	loop = urwid.MainLoop(wrap, unhandled_input=handle_inputs)
-# 
-# 	loop.run()
-# 
-# 	
-# 	print "loop done"
-# 	msgs = conn1.recv()
-# 	p1.join()
-# 	print "joined p1"
-# 	print msgs[:]
 
-# def gui(conn, fdin):
-# 
-# 	# sys.stdin = termios.tcgetattr(input)
-# 	# sys.stdout = termios.tcgetattr(output)
-# 	# sys.stdout = sys.__stdout__
-# 	sys.stdin = os.fdopen(fdin, 'r')
-# 
-# 	# print sys.stdin 
-# 	# print sys.stdout
-# 
-# 	def handle_interupts(interupt):
-# 		conn.send("HI")
-# 		if interupt in ('q', 'Q'):
-# 			conn.send(None)
-# 			raise urwid.ExitMainLoop()
-# 		else: conn.send(interupt)
-# 	text = urwid.Text("This is the original text")
-# 	wrap = urwid.Filler(text, "middle")
-# 	loop = urwid.MainLoop(wrap, unhandled_input=handle_interupts)
-# 	loop.run()
-# 	
-# 
-# if __name__ == "__main__":
-# 
-# 	conn1, conn2 = Pipe()
-# 
-# 	fd = sys.stdin.fileno()
-# 	
-# 	p1 = Process(target=gui, args=(conn2, fd))
-# 
-# 	p1.start()
-# 	
-# 	msgs = []
-# 	while True:
-# 		try:
-# 			msg = conn1.recv()
-# 			if msg == None:
-# 				raise ""
-# 			else:
-# 				msgs.push(msg)
-# 		except:
-# 			break
-# 
-# 	p1.join()
-# 	
-# 	print msgs[:]
-
-
-
-# run a test
-
-# import time
-# import os
-# 
-# def some_func1(conn):
-# 	for i in range(8):
-# 		conn.send("what up %d" % i)
-# 		time.sleep(2)
-# 	conn.send(True)
-# 	conn.close()
-# 
-# def some_func2(conn):
-# 	print "I am some_func2 of second process"
-# 	while(True):
-# 		try:
-# 			msg = conn.recv()
-# 			if type(msg) is bool:
-# 				raise "Uh..."
-# 			print "p2 gets message: ", msg
-# 		except:
-# 			print "whoa connection closed!"
-# 			return
-# 		
-# if __name__ == "__main__":
-# 	conn1, conn2 = Pipe()
-# 	p1 = Process(target=some_func1, args=(conn1,))
-# 	p2 = Process(target=some_func2, args=(conn2,))
-# 	p1.start()
-# 	p2.start()
-# 	p1.join()
-# 	print "p1 joined"
-# 	p2.join()
-# 	print "p2 joined"
-# 	exit

@@ -1,6 +1,16 @@
 ## @package pcat
 # @TODO: needs full header
 
+# @author W. Cole Davis
+
+# Import mpi4py MPI namespace
+from mpi4py import MPI
+
+# Import time
+import time
+
+# Import os
+import os
 
 ## Variables
 #
@@ -31,3 +41,17 @@ class static:
 		"group1.local",
 		"group1.cs.odu.edu"
 	]
+
+## Shutdown procedure
+#
+# Shuts down the entire application properly
+# @TODO: is not safe to call until after initialization
+#        has been completed!!
+def shutdown():
+  print "Shutting down the system"
+  manager.close()
+  for i in range(1, comm.size):
+    comm.send("EXIT", dest=i, tag=i)
+  # @TODO: this needs to change but for this iteration is 'ok'
+  MPI.Finalize()
+  print "MPI was shutdown successfully, terminating"
